@@ -435,7 +435,7 @@ cl_size_dist = list()
 
 #%%
 
-for itr in range(10):
+for itr in range(1000):
     #randomly draw group labels and reassign them
     new_groups = sorted(groups, key=lambda x: random.random())
     permute_df['Group'] = new_groups*19
