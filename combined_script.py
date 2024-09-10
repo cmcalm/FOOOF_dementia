@@ -129,17 +129,46 @@ for sub in subjects:
         ap_corr = ap_corr.rename(columns = {0:'frequency'})
         ap_corr['power'] = ap_corr1
         
-        idx_del = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-2))]
-        spec_df.loc[tic,'adj_delta'] = ap_corr.loc[idx_del, 'power'].values[0]
-        idx_the = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-6))]
-        spec_df.loc[tic,'adj_theta'] = ap_corr.loc[idx_the, 'power'].values[0]
-        idx_alp = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-10))]
-        spec_df.loc[tic,'adj_alpha'] = ap_corr.loc[idx_alp, 'power'].values[0]
-        idx_bet = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-21))]
-        spec_df.loc[tic,'adj_beta'] = ap_corr.loc[idx_bet, 'power'].values[0]
-        idx_gam = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-37.5))]
-        spec_df.loc[tic,'adj_gamma'] = ap_corr.loc[idx_gam, 'power'].values[0]
-    
+        nums = list(range(1, 12))
+        for number in nums:
+            cf = spec_df['center frequency %s' % (number)].iloc[tic]
+            if cf >= 1 and cf <= 4:
+                delta_pws.append(spec_df['aperiodic adjusted %s' % (number)].iloc[tic])
+            if cf >= 4 and cf <= 8:
+                theta_pws.append(spec_df['aperiodic adjusted %s' % (number)].iloc[tic])
+            if cf >= 8 and cf <= 12:
+                alpha_pws.append(spec_df['aperiodic adjusted %s' % (number)].iloc[tic])
+            if cf >= 12 and cf <= 30:
+                beta_pws.append(spec_df['aperiodic adjusted %s' % (number)].iloc[tic])
+            if cf >= 30 and cf <= 45:
+                gamma_pws.append(spec_df['aperiodic adjusted %s' % (number)].iloc[tic])
+        
+        if len(delta_pws) >= 1:
+            spec_df.loc[tic,'adj_delta'] = max(delta_pws)
+        else: 
+            idx_del = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-2))]
+            spec_df.loc[tic,'adj_delta'] = ap_corr.loc[idx_del, 'power'].values[0]
+        if len(theta_pws) >= 1:
+            spec_df.loc[tic,'adj_theta'] = max(theta_pws)
+        else:
+            idx_the = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-6))]
+            spec_df.loc[tic,'adj_theta'] = ap_corr.loc[idx_the, 'power'].values[0]
+        if len(alpha_pws) >= 1:
+            spec_df.loc[tic,'adj_alpha'] = max(alpha_pws)
+        else:
+            idx_alp = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-10))]
+            spec_df.loc[tic,'adj_alpha'] = ap_corr.loc[idx_alp, 'power'].values[0]
+        if len(beta_pws) >= 1:
+            spec_df.loc[tic,'adj_beta'] = max(beta_pws)
+        else:
+            idx_bet = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-21))]
+            spec_df.loc[tic,'adj_beta'] = ap_corr.loc[idx_bet, 'power'].values[0]
+        if len(gamma_pws) >= 1:
+            spec_df.loc[tic,'adj_gamma'] =  max(gamma_pws)
+        else:
+            idx_gam = ap_corr.index[ap_corr['frequency'] == min(fmfreqs, key=lambda x:abs(x-37.5))]
+            spec_df.loc[tic,'adj_gamma'] = ap_corr.loc[idx_gam, 'power'].values[0]
+            
     
     spec_df['subject'] = [sub]*len(channel_names)
 
